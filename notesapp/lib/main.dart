@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'splashscreen.dart'; // Impor widget SplashScreen yang telah Anda buat
 import 'login.dart';
+import 'register.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -15,7 +22,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SplashScreen(), // Gunakan widget SplashScreen sebagai splash screen
+      initialRoute: '/', // Rute awal adalah splash screen
+      routes: {
+        '/': (context) => SplashScreen(), // Rute untuk SplashScreen
+        '/login': (context) => LoginScreen(), // Rute untuk LoginScreen
+        '/register': (context) => RegisterScreen(), // Rute untuk RegisterScreen
+      },
     );
   }
 }
