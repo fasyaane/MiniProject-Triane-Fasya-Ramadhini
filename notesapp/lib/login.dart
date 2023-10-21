@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'notes.dart';
+import 'database_service.dart';
 
 class LoginScreen extends StatelessWidget {
   final usernameController = TextEditingController();
@@ -7,6 +10,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<User?> loginUser(String email, String password) async {
+      // ...
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
@@ -56,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                           30, // Mengurangi jarak vertikal dengan input username
                     ),
                     child: Text(
-                      'Username',
+                      'Email',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF3F658B),
@@ -75,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                       child: TextField(
                         controller: usernameController,
                         decoration: InputDecoration(
-                          hintText: "Username",
+                          hintText: "Email",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
                         ),
@@ -128,7 +134,12 @@ class LoginScreen extends StatelessWidget {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Tambahkan logika untuk menghandle login di sini
+                            // Tambahkan logika untuk navigasi ke halaman registrasi di sini
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Color(0xFF7EAAC9),

@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
-
+import 'login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'database_service.dart';
 
 class RegisterScreen extends StatelessWidget {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  void registerUser() async {
+    Future<User?> registerUser(String email, String password) async {
+      // ...
+    }
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      // Registrasi berhasil, Anda dapat menangani logika lanjutan di sini
+    } catch (e) {
+      // Penanganan kesalahan saat registrasi gagal
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +41,7 @@ class RegisterScreen extends StatelessWidget {
                   top: 70.0,
                 ),
                 child: Image.asset(
-                  'assets/your_logo.png', // Ganti dengan path logo Anda
+                  'assets/logonotesapp.png', // Ganti dengan path logo Anda
                   width: 150,
                   height: 150,
                 ),
@@ -58,41 +76,6 @@ class RegisterScreen extends StatelessWidget {
                         color: Color(0xFF7EAAC9),
                       ),
                       child: TextField(
-                        controller: usernameController,
-                        decoration: InputDecoration(
-                          hintText: "Username",
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(10),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10, // Sesuaikan jarak vertikal antara teks 'Username' dan 'Email'
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                    ),
-                    child: Text(
-                      'Email',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF3F658B),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Container(
-                      width: 500,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFF7EAAC9),
-                      ),
-                      child: TextField(
                         controller: emailController,
                         decoration: InputDecoration(
                           hintText: "Email",
@@ -103,7 +86,8 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 10, // Sesuaikan jarak vertikal antara teks 'Email' dan 'Password'
+                    height:
+                        10, // Sesuaikan jarak vertikal antara teks 'Email' dan 'Password'
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -142,7 +126,8 @@ class RegisterScreen extends StatelessWidget {
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top: 40, // Sesuaikan jarak vertikal dengan tombol Register
+                      top:
+                          40, // Sesuaikan jarak vertikal dengan tombol Register
                     ),
                     child: Align(
                       alignment: Alignment.center, // Posisikan tombol di tengah
@@ -152,6 +137,14 @@ class RegisterScreen extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             // Tambahkan logika untuk menghandle proses registrasi di sini
+
+                            // Tambahkan logika untuk navigasi ke halaman registrasi di sini
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Color(0xFF7EAAC9),
