@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'splashscreen.dart'; // Impor widget SplashScreen yang telah Anda buat
+import 'splashscreen.dart'; 
 import 'login.dart';
 import 'register.dart';
 import 'package:firebase_core/firebase_core.dart';

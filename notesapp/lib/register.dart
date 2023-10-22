@@ -17,9 +17,7 @@ class RegisterScreen extends StatelessWidget {
         email: emailController.text,
         password: passwordController.text,
       );
-      // Registrasi berhasil, Anda dapat menangani logika lanjutan di sini
     } catch (e) {
-      // Penanganan kesalahan saat registrasi gagal
       print("Error: $e");
     }
   }
@@ -29,7 +27,7 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
-        title: Text('Register'), // Ganti judul sesuai kebutuhan
+        title: Text('Register'),
       ),
       body: SingleChildScrollView(
         child: Align(
@@ -41,7 +39,7 @@ class RegisterScreen extends StatelessWidget {
                   top: 70.0,
                 ),
                 child: Image.asset(
-                  'assets/logonotesapp.png', // Ganti dengan path logo Anda
+                  'assets/logonotesapp.png',
                   width: 150,
                   height: 150,
                 ),
@@ -56,10 +54,10 @@ class RegisterScreen extends StatelessWidget {
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top: 20, // Sesuaikan jarak vertikal dengan input username
+                      top: 20, //
                     ),
                     child: Text(
-                      'Username',
+                      'Email',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF3F658B),
@@ -86,8 +84,7 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height:
-                        10, // Sesuaikan jarak vertikal antara teks 'Email' dan 'Password'
+                    height: 10, //
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -126,19 +123,15 @@ class RegisterScreen extends StatelessWidget {
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top:
-                          40, // Sesuaikan jarak vertikal dengan tombol Register
+                      top: 40,
                     ),
                     child: Align(
-                      alignment: Alignment.center, // Posisikan tombol di tengah
+                      alignment: Alignment.center,
                       child: SizedBox(
                         width: 500,
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Tambahkan logika untuk menghandle proses registrasi di sini
-
-                            // Tambahkan logika untuk navigasi ke halaman registrasi di sini
                             Navigator.push(
                               context,
                               MaterialPageRoute(

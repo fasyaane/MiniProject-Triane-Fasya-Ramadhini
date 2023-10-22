@@ -128,17 +128,17 @@ class LoginScreen extends StatelessWidget {
                       top: 30, // Mengurangi jarak vertikal dengan tombol Login
                     ),
                     child: Align(
-                      alignment: Alignment.center, // Posisikan tombol di tengah
+                      alignment:
+                          Alignment.center, // Supaya tombol login ditengah
                       child: SizedBox(
                         width: 500,
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Tambahkan logika untuk navigasi ke halaman registrasi di sini
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
+                                  builder: (context) => NoteListScreen()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -167,13 +167,13 @@ class LoginScreen extends StatelessWidget {
                           10, // Mengurangi jarak vertikal dengan tombol Registrasi
                     ),
                     child: Align(
-                      alignment: Alignment.center, // Posisikan tombol di tengah
+                      alignment:
+                          Alignment.center, // agar posisi tombol di tengah
                       child: SizedBox(
                         width: 500,
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Tambahkan logika untuk navigasi ke halaman registrasi di sini
                             Navigator.push(
                               context,
                               MaterialPageRoute(
