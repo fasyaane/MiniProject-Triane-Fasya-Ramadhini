@@ -28,6 +28,7 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
         title: Text('Register'),
+        automaticallyImplyLeading: false, // Menghapus tombol kembali
       ),
       body: SingleChildScrollView(
         child: Align(

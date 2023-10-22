@@ -84,10 +84,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
     }
   }
 
-  Future<void> _signOut(BuildContext context) async {
+  void _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => LoginScreen(),
       ));
@@ -102,11 +101,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
         title: Text('Catatan'),
+        automaticallyImplyLeading: false, // Menghapus tombol kembali
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              _signOut(context);
+              _signOut();
             },
           ),
         ],

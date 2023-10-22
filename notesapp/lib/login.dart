@@ -16,6 +16,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
+        automaticallyImplyLeading: false, // Menghapus tombol kembali
       ),
       body: SingleChildScrollView(
         child: Align(
