@@ -9,6 +9,12 @@ class Note {
   Note({required this.title, required this.content});
 }
 
+void main() {
+  runApp(MaterialApp(
+    home: NoteListScreen(),
+  ));
+}
+
 class NoteListScreen extends StatefulWidget {
   @override
   _NoteListScreenState createState() => _NoteListScreenState();
@@ -21,6 +27,50 @@ class _NoteListScreenState extends State<NoteListScreen> {
     setState(() {
       notes.add(note);
     });
+  }
+
+  void _editNote(int index) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateNoteScreen(existingNote: notes[index]),
+      ),
+    );
+
+    if (result != null && result is Note) {
+      setState(() {
+        notes[index] = result;
+      });
+    }
+  }
+
+  void _deleteNote(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Hapus Catatan"),
+          content: Text("Apakah Anda yakin ingin menghapus catatan ini?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Tidak"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Ya"),
+              onPressed: () {
+                setState(() {
+                  notes.removeAt(index);
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _createNote() async {
@@ -62,7 +112,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
         ],
       ),
       body: notes.isEmpty
-          ? Center(child: Text('Belum ada catatan.'))
+          ? Center(child: Text(''))
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView.builder(
@@ -73,6 +123,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ListTile(
                         title: Text(notes[index].title),
                         subtitle: Text(notes[index].content),
+                        onTap: () {
+                          _editNote(index);
+                        },
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            _deleteNote(index);
+                          },
+                        ),
                       ),
                       Divider(),
                     ],
@@ -92,6 +151,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
 }
 
 class CreateNoteScreen extends StatefulWidget {
+  final Note? existingNote;
+
+  CreateNoteScreen({this.existingNote});
+
   @override
   _CreateNoteScreenState createState() => _CreateNoteScreenState();
 }
@@ -99,6 +162,15 @@ class CreateNoteScreen extends StatefulWidget {
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.existingNote != null) {
+      _titleController.text = widget.existingNote!.title;
+      _contentController.text = widget.existingNote!.content;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,11 +218,5 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         ),
       ),
     );
-  }
-
-  void main() {
-    runApp(MaterialApp(
-      home: NoteListScreen(),
-    ));
   }
 }
