@@ -4,15 +4,53 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'notes.dart';
 import 'database_service.dart';
 
-class LoginScreen extends StatelessWidget {
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController usernameController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
+
+  Future<void> logIn() async {
+    showDialog(
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      context: context,
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: usernameController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      // Autentikasi berhasil, lakukan sesuatu setelah login.
+    } on FirebaseAuthException catch (e) {
+      // Autentikasi gagal, tampilkan pesan kesalahan.
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error: ${e.message}'),
+        backgroundColor: Colors.white,
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ));
+      print(e);
+    }
+
+    // Tutup dialog setelah autentikasi selesai.
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Future<User?> loginUser(String email, String password) async {
-      // ...
-    }
+    Future<User?> loginUser(String email, String password) async {}
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
@@ -136,11 +174,7 @@ class LoginScreen extends StatelessWidget {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => NoteListScreen()),
-                            );
+                            logIn();
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Color(0xFF7EAAC9),

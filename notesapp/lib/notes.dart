@@ -87,9 +87,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => LoginScreen(),
-      ));
     } catch (e) {
       print("Error during logout: $e");
     }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'splashscreen.dart'; 
+import 'splashscreen.dart';
 import 'login.dart';
 import 'register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'database_service.dart';
+import 'login_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      // home: LoggedInHandler(),
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
@@ -33,28 +35,28 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class SplashScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: FutureBuilder<String>(
-          future: Future.delayed(const Duration(seconds: 3), () => 'data'),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return LoginScreen();
-            } else {
-              return Center(
-                child: Image.asset(
-                  'assets/logonotesapp.png',
-                  width: 200,
-                  height: 200,
-                ),
-              );
-            }
-          },
-        ),
-      ),
-    );
-  }
-}
+// class SplashScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Center(
+//         child: FutureBuilder<String>(
+//           future: Future.delayed(const Duration(seconds: 3), () => 'data'),
+//           builder: (context, snapshot) {
+//             if (snapshot.connectionState == ConnectionState.done) {
+//               return LoggedInHandler();
+//             } else {
+//               return Center(
+//                 child: Image.asset(
+//                   'assets/logonotesapp.png',
+//                   width: 200,
+//                   height: 200,
+//                 ),
+//               );
+//             }
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
