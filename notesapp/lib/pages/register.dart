@@ -32,10 +32,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8ABCD7),
-        title: Text('Register'),
+        backgroundColor: const Color(0xFF8ABCD7),
+        title: const Text('Register'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -56,13 +56,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 150,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 80.0,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
@@ -77,17 +77,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     child: Container(
                       width: 500,
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFF7EAAC9),
+                        color: const Color(0xFF7EAAC9),
                       ),
                       child: TextField(
                         controller: emailController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Email",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
@@ -95,10 +95,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10, //
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
@@ -112,18 +112,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     child: Container(
                       width: 500,
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFF7EAAC9),
+                        color: const Color(0xFF7EAAC9),
                       ),
                       child: TextField(
                         controller: passwordController,
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Password",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
@@ -132,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       left: 20,
                       right: 20,
                       top: 40,
@@ -144,32 +144,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () async {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => LoginScreen(),
-                            //   ),
-                            // );
                             await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
                               email: emailController.text,
                               password: passwordController.text,
                             );
-                            // Navigator.of(context).pop();
 
-                            Navigator.of(context).pushReplacement(
+                            await FirebaseAuth.instance.signOut();
+
+                            Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => LoginScreen(),
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF7EAAC9),
+                            primary: const Color(0xFF7EAAC9),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Register',
                             style: TextStyle(
                               fontSize: 18,

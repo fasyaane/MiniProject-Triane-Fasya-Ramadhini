@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notesapp/pages/notes.dart';
 import 'register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -26,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
         email: usernameController.text.trim(),
         password: passwordController.text.trim(),
       );
-      print("masuk autentikasi");
       // Autentikasi berhasil, lakukan sesuatu setelah login.
     } on FirebaseAuthException catch (e) {
       // Autentikasi gagal, tampilkan pesan kesalahan.
@@ -40,9 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
       ));
-      print("masuk exception");
-    }
+    } finally {}
     Navigator.of(context).pop();
+    if (await FirebaseAuth.instance.currentUser != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => NoteListScreen(),
+          ),
+        );
+    }
   }
 
   @override
@@ -50,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Future<User?> loginUser(String email, String password) async {}
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8ABCD7),
+        backgroundColor: const Color(0xFF8ABCD7),
         automaticallyImplyLeading: false, // Menghapus tombol kembali
       ),
       body: SingleChildScrollView(
@@ -68,13 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 150,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 80.0,
               ),
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: const EdgeInsets.only(
+                  padding: EdgeInsets.only(
                     left: 20.0,
                   ),
                   child: Text(
@@ -90,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
@@ -106,17 +112,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     child: Container(
                       width: 500,
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFF7EAAC9),
+                        color: const Color(0xFF7EAAC9),
                       ),
                       child: TextField(
                         controller: usernameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Email",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
@@ -124,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
@@ -138,18 +144,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     child: Container(
                       width: 500,
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFF7EAAC9),
+                        color: const Color(0xFF7EAAC9),
                       ),
                       child: TextField(
                         controller: passwordController,
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Password",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
@@ -158,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       left: 20,
                       right: 20,
                       top: 30, // Mengurangi jarak vertikal dengan tombol Login
@@ -174,12 +180,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             logIn();
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF7EAAC9),
+                            primary: const Color(0xFF7EAAC9),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Login',
                             style: TextStyle(
                               fontSize: 18,
@@ -192,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       left: 20,
                       right: 20,
                       top:
@@ -213,12 +219,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF7EAAC9),
+                            primary: const Color(0xFF7EAAC9),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Registrasi',
                             style: TextStyle(
                               fontSize: 18,

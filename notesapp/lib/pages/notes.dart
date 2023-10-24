@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:notesapp/pages/login.dart';
 import '../notes_model.dart';
 import 'package:notesapp/data_source/firebase_data_source.dart';
 
@@ -21,7 +22,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void _editNote(int index) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
+      MaterialPageRoute(  
         builder: (context) => CreateNoteScreen(existingNote: notes[index]),
       ),
     );
@@ -43,18 +44,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Hapus Catatan"),
-          content: Text("Apakah Anda yakin ingin menghapus catatan ini?"),
+          title: const Text("Hapus Catatan"),
+          content: const Text("Apakah Anda yakin ingin menghapus catatan ini?"),
           actions: <Widget>[
             TextButton(
-              child: Text("Tidak"),
+              child: const Text("Tidak"),
               onPressed: () {
                 Navigator.of(context)
                     .pop(false); // Mengembalikan false ketika memilih "Tidak"
               },
             ),
             TextButton(
-              child: Text("Ya"),
+              child: const Text("Ya"),
               onPressed: () {
                 Navigator.of(context)
                     .pop(true); // Mengembalikan true ketika memilih "Ya"
@@ -98,6 +99,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ),
+        );
     } catch (e) {
       print("Error during logout: $e");
     }
@@ -107,12 +113,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8ABCD7),
+        backgroundColor: const Color(0xFF8ABCD7),
         title: Text('${_dataSource.currentUser.email} Catatan'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
               _signOut();
             },
@@ -127,13 +133,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           notes = snapshot.data ?? [];
 
           return notes.isEmpty
-              ? Center(child: Text('Tidak ada catatan.'))
+              ? const Center(child: Text('Tidak ada catatan.'))
               : Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ListView.builder(
@@ -148,13 +154,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               _editNote(index);
                             },
                             trailing: IconButton(
-                              icon: Icon(Icons.delete),
+                              icon: const Icon(Icons.delete),
                               onPressed: () {
                                 _deleteNote(index);
                               },
                             ),
                           ),
-                          Divider(),
+                          const Divider(),
                         ],
                       );
                     },
@@ -166,8 +172,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
         onPressed: () {
           _createNote();
         },
-        backgroundColor: Color(0xFF8ABCD7),
-        child: Icon(Icons.add),
+        backgroundColor: const Color(0xFF8ABCD7),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -201,8 +207,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8ABCD7),
-        title: Text('Buat Catatan'),
+        backgroundColor: const Color(0xFF8ABCD7),
+        title: const Text('Buat Catatan'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -210,18 +216,18 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Judul',
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _contentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Isi Catatan',
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 final id = _idController.text;
@@ -236,9 +242,9 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                   Navigator.pop(context, newNote);
                 }
               },
-              child: Text('Simpan'),
+              child: const Text('Simpan'),
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFF8ABCD7),
+                primary: const Color(0xFF8ABCD7),
               ),
             ),
           ],
