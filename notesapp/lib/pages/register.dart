@@ -1,60 +1,45 @@
 import 'package:flutter/material.dart';
-import 'register.dart';
+import 'login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'notes.dart';
-import 'database_service.dart';
+import 'package:notesapp/database_service.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController usernameController = TextEditingController();
+class _RegisterScreenState extends State<RegisterScreen> {
+  TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> logIn() async {
-    showDialog(
-      barrierDismissible: false,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      context: context,
-    );
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: usernameController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-      // Autentikasi berhasil, lakukan sesuatu setelah login.
-    } on FirebaseAuthException catch (e) {
-      // Autentikasi gagal, tampilkan pesan kesalahan.
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error: ${e.message}'),
-        backgroundColor: Colors.white,
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-      ));
-      print(e);
+  void registerUser() async {
+    Future<User?> registerUser(String email, String password) async {
+      // ...
     }
-
-    // Tutup dialog setelah autentikasi selesai.
-    Navigator.of(context).pop();
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<User?> loginUser(String email, String password) async {}
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
-        automaticallyImplyLeading: false, // Menghapus tombol kembali
+        title: Text('Register'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Align(
@@ -74,22 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 80.0,
               ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                  ),
-                  child: Text(
-                    'LOGIN',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF8ABCD7),
-                    ),
-                  ),
-                ),
-              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -97,8 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top:
-                          30, // Mengurangi jarak vertikal dengan input username
+                      top: 20, //
                     ),
                     child: Text(
                       'Email',
@@ -118,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Color(0xFF7EAAC9),
                       ),
                       child: TextField(
-                        controller: usernameController,
+                        controller: emailController,
                         decoration: InputDecoration(
                           hintText: "Email",
                           border: InputBorder.none,
@@ -126,6 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 10, //
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -164,55 +135,32 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top: 30, // Mengurangi jarak vertikal dengan tombol Login
+                      top: 40,
                     ),
                     child: Align(
-                      alignment:
-                          Alignment.center, // Supaya tombol login ditengah
+                      alignment: Alignment.center,
                       child: SizedBox(
                         width: 500,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
-                            logIn();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF7EAAC9),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top:
-                          10, // Mengurangi jarak vertikal dengan tombol Registrasi
-                    ),
-                    child: Align(
-                      alignment:
-                          Alignment.center, // agar posisi tombol di tengah
-                      child: SizedBox(
-                        width: 500,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
+                          onPressed: () async {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => LoginScreen(),
+                            //   ),
+                            // );
+                            await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+                            // Navigator.of(context).pop();
+
+                            Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => RegisterScreen()),
+                                builder: (context) => LoginScreen(),
+                              ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -222,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: Text(
-                            'Registrasi',
+                            'Register',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

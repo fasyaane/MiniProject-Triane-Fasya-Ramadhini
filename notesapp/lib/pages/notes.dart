@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'login.dart';
-
-class Note {
-  final String title;
-  final String content;
-
-  Note({required this.title, required this.content});
-}
+import '../notes_model.dart';
+import 'package:notesapp/data_source/firebase_data_source.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -21,13 +15,8 @@ class NoteListScreen extends StatefulWidget {
 }
 
 class _NoteListScreenState extends State<NoteListScreen> {
-  final List<Note> notes = [];
-
-  void _addNote(Note note) {
-    setState(() {
-      notes.add(note);
-    });
-  }
+  final FirebaseDataSource _dataSource = FirebaseDataSource();
+  List<Note> notes = [];
 
   void _editNote(int index) async {
     final result = await Navigator.push(
@@ -38,14 +27,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
 
     if (result != null && result is Note) {
-      setState(() {
-        notes[index] = result;
-      });
+      try {
+        await _dataSource.updateNote(result.id, result.title, result.content);
+        setState(() {
+          notes[index] = result;
+        });
+      } catch (e) {
+        print("Error updating note: $e");
+      }
     }
   }
 
-  void _deleteNote(int index) {
-    showDialog(
+  void _deleteNote(int index) async {
+    bool hapus = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -55,22 +49,29 @@ class _NoteListScreenState extends State<NoteListScreen> {
             TextButton(
               child: Text("Tidak"),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                    .pop(false); // Mengembalikan false ketika memilih "Tidak"
               },
             ),
             TextButton(
               child: Text("Ya"),
               onPressed: () {
-                setState(() {
-                  notes.removeAt(index);
-                });
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                    .pop(true); // Mengembalikan true ketika memilih "Ya"
               },
             ),
           ],
         );
       },
     );
+
+    if (hapus == true) {
+      try {
+        await _dataSource.deleteNote(notes[index].id);
+      } catch (e) {
+        print("Error deleting note: $e");
+      }
+    }
   }
 
   void _createNote() async {
@@ -80,7 +81,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
 
     if (result != null && result is Note) {
-      _addNote(result);
+      try {
+        String newId = _dataSource.newId();
+        final newNote = Note(
+          id: newId,
+          title: result.title,
+          content: result.content,
+        );
+        await _dataSource.addNote(newNote.id, newNote.title, newNote.content);
+      } catch (e) {
+        print("Error adding note: $e");
+      }
     }
   }
 
@@ -97,8 +108,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF8ABCD7),
-        title: Text('Catatan'),
-        automaticallyImplyLeading: false, // Menghapus tombol kembali
+        title: Text('${_dataSource.currentUser.email} Catatan'),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -108,34 +119,49 @@ class _NoteListScreenState extends State<NoteListScreen> {
           ),
         ],
       ),
-      body: notes.isEmpty
-          ? Center(child: Text(''))
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListView.builder(
-                itemCount: notes.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        title: Text(notes[index].title),
-                        subtitle: Text(notes[index].content),
-                        onTap: () {
-                          _editNote(index);
-                        },
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            _deleteNote(index);
-                          },
-                        ),
-                      ),
-                      Divider(),
-                    ],
-                  );
-                },
-              ),
-            ),
+      body: StreamBuilder<List<Note>>(
+        stream: _dataSource.getNotesStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          notes = snapshot.data ?? [];
+
+          return notes.isEmpty
+              ? Center(child: Text('Tidak ada catatan.'))
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView.builder(
+                    itemCount: notes.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            title: Text(notes[index].title),
+                            subtitle: Text(notes[index].content),
+                            onTap: () {
+                              _editNote(index);
+                            },
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                _deleteNote(index);
+                              },
+                            ),
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    },
+                  ),
+                );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _createNote();
@@ -157,12 +183,14 @@ class CreateNoteScreen extends StatefulWidget {
 }
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
+  final _idController = TextEditingController();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
   @override
   void initState() {
     if (widget.existingNote != null) {
+      _idController.text = widget.existingNote!.id;
       _titleController.text = widget.existingNote!.title;
       _contentController.text = widget.existingNote!.content;
     }
@@ -196,10 +224,12 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
+                final id = _idController.text;
                 final title = _titleController.text;
                 final content = _contentController.text;
                 if (title.isNotEmpty && content.isNotEmpty) {
                   final newNote = Note(
+                    id: id,
                     title: title,
                     content: content,
                   );

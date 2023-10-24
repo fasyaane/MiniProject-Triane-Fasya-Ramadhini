@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:notesapp/login.dart';
-import 'package:notesapp/main.dart';
-import 'package:notesapp/notes.dart';
+import 'package:notesapp/pages/login.dart';
+import 'package:notesapp/pages/notes.dart';
 
 class LoggedInHandler extends StatefulWidget {
   const LoggedInHandler({super.key});
