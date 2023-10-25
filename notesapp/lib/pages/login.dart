@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notesapp/data_source/firebase_data_source.dart';
 import 'package:notesapp/pages/notes.dart';
 import 'register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,22 +15,38 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
 
   Future<void> logIn() async {
-    showDialog(
-      barrierDismissible: false,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      context: context,
-    );
+    final FirebaseDataSource _dataSource = FirebaseDataSource();
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: usernameController.text.trim(),
         password: passwordController.text.trim(),
       );
-      // Autentikasi berhasil, lakukan sesuatu setelah login.
+
+      // Cek apakah login berhasil
+      if (userCredential.user != null) {
+        // Login berhasil, navigasi ke halaman beranda atau halaman yang sesuai
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => NoteListScreen(),
+          ),
+        );
+      } else {
+        // Login gagal, tampilkan pesan kesalahan
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Login gagal. Silakan coba lagi.'),
+          backgroundColor: Colors.white,
+          action: SnackBarAction(
+            label: 'OK',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ));
+      }
     } on FirebaseAuthException catch (e) {
-      // Autentikasi gagal, tampilkan pesan kesalahan.
+      // Tangani kesalahan dari FirebaseAuthException
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Error: ${e.message}'),
         backgroundColor: Colors.white,
@@ -40,20 +57,11 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
       ));
-    } finally {}
-    Navigator.of(context).pop();
-    if (await FirebaseAuth.instance.currentUser != null) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => NoteListScreen(),
-        ),
-      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<User?> loginUser(String email, String password) async {}
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF8ABCD7),
@@ -100,8 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top:
-                          30, // Mengurangi jarak vertikal dengan input username
+                      top: 30,
                     ),
                     child: Text(
                       'Email',

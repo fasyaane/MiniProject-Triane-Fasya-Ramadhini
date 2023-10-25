@@ -1,6 +1,4 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'notes_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
   final DatabaseReference _databaseReference =

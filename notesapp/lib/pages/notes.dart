@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:notesapp/pages/login.dart';
@@ -29,7 +30,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
     if (result != null && result is Note) {
       try {
-        await _dataSource.updateNote(result.id, result.title, result.content);
+        await _dataSource.updateNote(
+            result.id, result.title, result.content, result.timestamp);
         setState(() {
           notes[index] = result;
         });
@@ -88,8 +90,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
           id: newId,
           title: result.title,
           content: result.content,
+          timestamp: result.timestamp,
         );
-        await _dataSource.addNote(newNote.id, newNote.title, newNote.content);
+        await _dataSource.addNote(
+            newNote.id, newNote.title, newNote.content, newNote.timestamp);
       } catch (e) {
         print("Error adding note: $e");
       }
@@ -109,72 +113,114 @@ class _NoteListScreenState extends State<NoteListScreen> {
     }
   }
 
+  Future<String> getUsername(String uid) async {
+    String? username = await _dataSource.getUsernameByUid(uid);
+    return username ?? 'unknown';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF8ABCD7),
-        title: Text('Hai, ${_dataSource.currentUser.email}'),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              _signOut();
-            },
-          ),
-        ],
-      ),
-      body: StreamBuilder<List<Note>>(
-        stream: _dataSource.getNotesStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+    return FutureBuilder<String>(
+      future: getUsername(_dataSource.currentUser.uid),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          String username = snapshot.data ?? 'unknown';
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: const Color(0xFF8ABCD7),
+              title: Text('Hai, $username'),
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: () {
+                    _signOut();
+                  },
+                ),
+              ],
+            ),
+            body: StreamBuilder<List<Note>>(
+              stream: _dataSource.getNotesStream(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
 
-          notes = snapshot.data ?? [];
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          return notes.isEmpty
-              ? const Center(child: Text('Tidak ada catatan.'))
-              : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView.builder(
-                    itemCount: notes.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            title: Text(notes[index].title),
-                            subtitle: Text(notes[index].content),
-                            onTap: () {
-                              _editNote(index);
-                            },
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                _deleteNote(index);
-                              },
-                            ),
-                          ),
-                          const Divider(),
-                        ],
+                notes = snapshot.data ?? [];
+
+                return notes.isEmpty
+                    ? const Center(child: Text('Tidak ada catatan.'))
+                    : Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ListView.builder(
+                          itemCount: notes.length,
+                          itemBuilder: (context, index) {
+                            DateTime tsdate =
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    int.parse(notes[index].timestamp));
+                            String datetime =
+                                DateFormat('dd-MMMM-yyyy hh:mm').format(tsdate);
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment
+                                  .start, // Memposisikan widget ke cross axis (yaitu, sumbu vertikal) dari start (pojok kiri)
+                              children: [
+                                ListTile(
+                                  title: Text(notes[index].title),
+                                  subtitle: Text(notes[index].content),
+                                  onTap: () {
+                                    _editNote(index);
+                                  },
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () {
+                                      _deleteNote(index);
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Last edited : ${datetime}',
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(),
+                              ],
+                            );
+                          },
+                        ),
                       );
-                    },
-                  ),
-                );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _createNote();
-        },
-        backgroundColor: const Color(0xFF8ABCD7),
-        child: const Icon(Icons.add),
-      ),
+              },
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                _createNote();
+              },
+              backgroundColor: const Color(0xFF8ABCD7),
+              child: const Icon(Icons.add),
+            ),
+          );
+        }
+      },
     );
   }
 }
@@ -233,11 +279,13 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                 final id = _idController.text;
                 final title = _titleController.text;
                 final content = _contentController.text;
+                final timestamp = DateTime.now().millisecondsSinceEpoch;
                 if (title.isNotEmpty && content.isNotEmpty) {
                   final newNote = Note(
                     id: id,
                     title: title,
                     content: content,
+                    timestamp: timestamp.toString(),
                   );
                   Navigator.pop(context, newNote);
                 }
