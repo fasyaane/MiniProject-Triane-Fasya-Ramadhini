@@ -22,7 +22,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void _editNote(int index) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(  
+      MaterialPageRoute(
         builder: (context) => CreateNoteScreen(existingNote: notes[index]),
       ),
     );
@@ -99,11 +99,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => LoginScreen(),
-          ),
-        );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ),
+      );
     } catch (e) {
       print("Error during logout: $e");
     }
@@ -114,7 +114,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF8ABCD7),
-        title: Text('${_dataSource.currentUser.email} Catatan'),
+        title: Text('Hai, ${_dataSource.currentUser.email}'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(

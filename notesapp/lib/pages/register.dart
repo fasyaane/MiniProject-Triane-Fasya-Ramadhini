@@ -33,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF8ABCD7),
-        title: const Text('Register'),
+        title: const Text('Registrasi'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -104,7 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       right: 20,
                     ),
                     child: Text(
-                      'Password',
+                      'Kata Sandi',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF3F658B),
@@ -124,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
-                          hintText: "Password",
+                          hintText: "Kata Sandi",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
                         ),
@@ -165,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           child: const Text(
-                            'Register',
+                            'Registrasi',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

@@ -43,11 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
     } finally {}
     Navigator.of(context).pop();
     if (await FirebaseAuth.instance.currentUser != null) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => NoteListScreen(),
-          ),
-        );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => NoteListScreen(),
+        ),
+      );
     }
   }
 
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     left: 20.0,
                   ),
                   child: Text(
-                    'LOGIN',
+                    'MASUK',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       right: 20,
                     ),
                     child: Text(
-                      'Password',
+                      'Kata Sandi',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF3F658B),
@@ -156,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
-                          hintText: "Password",
+                          hintText: "Kata Sandi",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
                         ),
@@ -186,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: const Text(
-                            'Login',
+                            'Masuk',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
