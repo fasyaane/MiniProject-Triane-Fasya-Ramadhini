@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:notesapp/pages/login.dart';
+import 'package:notesapp/pages/summary.dart';
+import 'package:notesapp/services/summary.dart';
 import '../notes_model.dart';
 import 'package:notesapp/data_source/firebase_data_source.dart';
 
@@ -235,6 +237,8 @@ class CreateNoteScreen extends StatefulWidget {
 }
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
+  bool isLoading = false;
+
   final _idController = TextEditingController();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
@@ -247,6 +251,28 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
       _contentController.text = widget.existingNote!.content;
     }
     super.initState();
+  }
+
+  void getSummary() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final result = await RecommendationService.getRecommendation(
+          rangkuman: _contentController.text);
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => Rangkuman(
+            gptResponseData: result,
+          ),
+        ),
+      );
+    } catch (e) {}
   }
 
   @override
@@ -274,26 +300,46 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                final id = _idController.text;
-                final title = _titleController.text;
-                final content = _contentController.text;
-                final timestamp = DateTime.now().millisecondsSinceEpoch;
-                if (title.isNotEmpty && content.isNotEmpty) {
-                  final newNote = Note(
-                    id: id,
-                    title: title,
-                    content: content,
-                    timestamp: timestamp.toString(),
-                  );
-                  Navigator.pop(context, newNote);
-                }
-              },
-              child: const Text('Simpan'),
-              style: ElevatedButton.styleFrom(
-                primary: const Color(0xFF8ABCD7),
-              ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            final id = _idController.text;
+                            final title = _titleController.text;
+                            final content = _contentController.text;
+                            final timestamp =
+                                DateTime.now().millisecondsSinceEpoch;
+                            if (title.isNotEmpty && content.isNotEmpty) {
+                              final newNote = Note(
+                                id: id,
+                                title: title,
+                                content: content,
+                                timestamp: timestamp.toString(),
+                              );
+                              Navigator.pop(context, newNote);
+                            }
+                          },
+                          child: const Text('Simpan'),
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFF8ABCD7),
+                          ),
+                        ),
+                         const SizedBox(width: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            getSummary();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xFF8ABCD7),
+                          ),
+                          child: const Text('Rangkum'),
+                        )
+                      ],
+                    ),
             ),
           ],
         ),
