@@ -14,51 +14,71 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> logIn() async {
-    final FirebaseDataSource _dataSource = FirebaseDataSource();
+Future<void> logIn() async {
+  final FirebaseDataSource _dataSource = FirebaseDataSource();
 
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: usernameController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: usernameController.text.trim(),
+      password: passwordController.text.trim(),
+    );
 
-      // Cek apakah login berhasil
-      if (userCredential.user != null) {
-        // Login berhasil, navigasi ke halaman beranda atau halaman yang sesuai
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => NoteListScreen(),
-          ),
-        );
-      } else {
-        // Login gagal, tampilkan pesan kesalahan
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Login gagal. Silakan coba lagi.'),
-          backgroundColor: Colors.white,
-          action: SnackBarAction(
-            label: 'OK',
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
-        ));
-      }
-    } on FirebaseAuthException catch (e) {
-      // Tangani kesalahan dari FirebaseAuthException
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error: ${e.message}'),
-        backgroundColor: Colors.white,
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
+    if (userCredential.user != null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => NoteListScreen(),
         ),
-      ));
+      );
+    } else {
+      // Tampilkan AlertDialog jika login gagal
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFF8ABCD7), // Ganti warna latar belakang di sini
+            title: Text('Login Gagal', style: TextStyle(color: Colors.white)), // Ganti warna teks title
+            content: Text(
+              'Email atau kata sandi salah. Silakan coba lagi.',
+              style: TextStyle(color: Colors.white), // Ganti warna teks content
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK', style: TextStyle(color: Colors.white)), // Ganti warna teks button
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
+  } on FirebaseAuthException catch (e) {
+    // Tangani kesalahan dari FirebaseAuthException
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF8ABCD7), // Ganti warna latar belakang di sini
+          title: Text('Error', style: TextStyle(color: Colors.white)), // Ganti warna teks title
+          content: Text('Error: ${e.message}', style: TextStyle(color: Colors.white)), // Ganti warna teks content
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK', style: TextStyle(color: Colors.white)), // Ganti warna teks button
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
+}
+
+
+
+
 
   @override
   Widget build(BuildContext context) {

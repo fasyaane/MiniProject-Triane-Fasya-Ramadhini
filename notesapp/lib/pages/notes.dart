@@ -103,17 +103,53 @@ class _NoteListScreenState extends State<NoteListScreen> {
   }
 
   void _signOut() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => LoginScreen(),
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: const Color(0xFF8ABCD7),
+        title: Text(
+          'Konfirmasi Keluar',
+          style: TextStyle(color: Colors.white), // Warna teks untuk judul
         ),
+        content: Text(
+          'Apakah anda yakin ingin keluar?',
+          style: TextStyle(color: Colors.white), // Warna teks untuk konten
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              'Tidak',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text(
+              'Iya',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () async {
+              try {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              } catch (e) {
+                print("Error during logout: $e");
+              }
+            },
+          ),
+        ],
       );
-    } catch (e) {
-      print("Error during logout: $e");
-    }
-  }
+    },
+  );
+}
+
+
 
   Future<String> getUsername(String uid) async {
     String? username = await _dataSource.getUsernameByUid(uid);

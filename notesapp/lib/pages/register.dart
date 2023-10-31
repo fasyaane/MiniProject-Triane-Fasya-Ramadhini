@@ -41,10 +41,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } on FirebaseAuthException catch (e) {
       String errorMessage = '';
-      if (e.code == 'weak-password') {
-        errorMessage = "The password provided is too weak.";
-      } else if (e.code == 'email-already-in-use') {
-        errorMessage = "The account already exists for that email.";
+      if (e.code == 'kata sandi lemah') {
+        errorMessage = "Kata sandi yang diberikan terlalu lemah.";
+      } else if (e.code == 'email sudah digunakan') {
+        errorMessage = "Akun sudah ada untuk email itu";
       }
       // ignore: use_build_context_synchronously
       showDialog(
@@ -110,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       top: 20,
                     ),
                     child: Text(
-                      'Username',
+                      'Nama Pengguna',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF3F658B),
@@ -129,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: TextField(
                         controller: usernameController,
                         decoration: const InputDecoration(
-                          hintText: "Username",
+                          hintText: "Nama Pengguna",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10),
                         ),
