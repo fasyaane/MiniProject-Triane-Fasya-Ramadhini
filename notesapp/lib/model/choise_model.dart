@@ -25,3 +25,5 @@ class ChoiceData {
         "finish_reason": finishReason,
       };
 }
+
+

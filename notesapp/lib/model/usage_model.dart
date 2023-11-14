@@ -21,3 +21,4 @@ class UsageData {
         "total_tokens": totalTokens,
       };
 }
+

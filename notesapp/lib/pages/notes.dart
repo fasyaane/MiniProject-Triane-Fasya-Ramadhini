@@ -43,41 +43,41 @@ class _NoteListScreenState extends State<NoteListScreen> {
     }
   }
 
-  void _deleteNote(int index) async {
-    bool hapus = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Hapus Catatan"),
-          content: const Text("Apakah Anda yakin ingin menghapus catatan ini?"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Tidak"),
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // Mengembalikan false ketika memilih "Tidak"
-              },
-            ),
-            TextButton(
-              child: const Text("Ya"),
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // Mengembalikan true ketika memilih "Ya"
-              },
-            ),
-          ],
-        );
-      },
-    );
+ void _deleteNote(int index) async {
+  bool hapus = await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: const Color(0xFF8ABCD7), // Ubah warna latar belakang dialog
+        title: Text("Hapus Catatan", style: TextStyle(color: Colors.white)), // Mengatur warna teks title menjadi putih
+        content: Text("Apakah Anda yakin ingin menghapus catatan ini?", style: TextStyle(color: Colors.white)), // Mengatur warna teks content menjadi putih
+        actions: <Widget>[
+          TextButton(
+            child: Text("Tidak", style: TextStyle(color: Colors.white)), // Mengatur warna teks button menjadi putih
+            onPressed: () {
+              Navigator.of(context).pop(false); // Mengembalikan false ketika memilih "Tidak"
+            },
+          ),
+          TextButton(
+            child: Text("Ya", style: TextStyle(color: Colors.white)), // Mengatur warna teks button menjadi putih
+            onPressed: () {
+              Navigator.of(context).pop(true); // Mengembalikan true ketika memilih "Ya"
+            },
+          ),
+        ],
+      );
+    },
+  );
 
-    if (hapus == true) {
-      try {
-        await _dataSource.deleteNote(notes[index].id);
-      } catch (e) {
-        print("Error deleting note: $e");
-      }
+  if (hapus == true) {
+    try {
+      await _dataSource.deleteNote(notes[index].id);
+    } catch (e) {
+      print("Error deleting note: $e");
     }
   }
+}
+
 
   void _createNote() async {
     final result = await Navigator.push(

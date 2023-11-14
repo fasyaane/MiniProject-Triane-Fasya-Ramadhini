@@ -30,14 +30,15 @@ Future<void> logIn() async {
         ),
       );
     } else {
-      // Tampilkan AlertDialog jika login gagal
+      // kalo mau dihapus hapus aja line ini
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: const Color(0xFF8ABCD7), // Ganti warna latar belakang di sini
             title: Text('Login Gagal', style: TextStyle(color: Colors.white)), // Ganti warna teks title
-            content: Text(
+            content: const Text(
               'Email atau kata sandi salah. Silakan coba lagi.',
               style: TextStyle(color: Colors.white), // Ganti warna teks content
             ),
@@ -53,26 +54,30 @@ Future<void> logIn() async {
         },
       );
     }
+// sampe sini hapusnya 
   } on FirebaseAuthException catch (e) {
-    // Tangani kesalahan dari FirebaseAuthException
+    // disini neu kalo user salah login
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF8ABCD7), // Ganti warna latar belakang di sini
-          title: Text('Error', style: TextStyle(color: Colors.white)), // Ganti warna teks title
-          content: Text('Error: ${e.message}', style: TextStyle(color: Colors.white)), // Ganti warna teks content
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK', style: TextStyle(color: Colors.white)), // Ganti warna teks button
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFF8ABCD7), // Ganti warna latar belakang di sini
+            title: Text('Login Gagal', style: TextStyle(color: Colors.white)), // Ganti warna teks title
+            content: const Text(
+              'Email atau kata sandi salah. Silakan coba lagi.',
+              style: TextStyle(color: Colors.white), // Ganti warna teks content
             ),
-          ],
-        );
-      },
-    );
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK', style: TextStyle(color: Colors.white)), // Ganti warna teks button
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
   }
 }
 

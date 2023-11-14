@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
           width: 200,
           height: 200,
         ),
-      ),
+      ),  
     );
   }
 }

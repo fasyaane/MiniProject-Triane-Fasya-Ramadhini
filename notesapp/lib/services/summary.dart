@@ -32,14 +32,6 @@ class RecommendationService {
         "Authorization": "Bearer $apiKey",
       };
 
-      // final formatCurrency = NumberFormat.currency(
-      //   locale: 'id_ID',
-      //   symbol: 'Rp. ',
-      //   decimalDigits: 0,
-      // );
-
-      // String carBudget = formatCurrency.format(int.parse(budget));
-
       String promptData =
           "Buatkan rangkuman berdasarkan teks berikut $rangkuman";
 
